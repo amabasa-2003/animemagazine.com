@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Anime Magazine - All Time Favorites</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background: #000000;
+            color: #222;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .magazine-container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            padding: 40px 32px;
+        }
+        .magazine-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .magazine-title {
+            font-size: 2.5em;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        .magazine-subtitle {
+            font-size: 1.2em;
+            color: #888;
+            margin-top: 8px;
+        }
+        .anime-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 32px;
+        }
+        .anime-card {
+            background: #fafafa;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            overflow: hidden;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .anime-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+        .anime-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .anime-info {
+            padding: 16px;
+        }
+        .anime-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .anime-desc {
+            font-size: 0.98em;
+            color: #555;
+        }
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #fff;
+            border-radius: 12px;
+            padding: 32px 24px;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+        }
+        .modal-content img {
+            width: 180px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: #1db954;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+        .close-btn:hover {
+            background: #14833b;
+        }
+        /* Add to your <style> block */
+.redirect-btn {
+    display: inline-block;
+    margin: 16px 0;
+    padding: 10px 24px;
+    background: #1db954;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+.redirect-btn:hover {
+    background: #14833b;
+}
+        </style>
+        <style>
+            /* Additional styles for the magazine header */
+            .magazine-header {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-bottom: 32px;
+            }
+            .magazine-title {
+                font-size: 2.5em;
+                font-weight: bold;
+                color: #333;
+            }
+            .magazine-subtitle {
+                font-size: 1.2em;
+                color: #666;
+                margin-top: 8px;
+            }
+    </style>
+</head>
+<body>
+    <div class="magazine-container">
+        <div class="magazine-header">
+            <div class="magazine-title">All Time Favorite Anime</div>
+            <div class="magazine-subtitle">A curated selection of legendary anime series</div>
+        </div>
+        <div class="anime-list" id="animeList">
+            <!-- Anime cards will be injected here -->
+        </div>
+    </div>
+    <!-- Modal for details -->
+    <div class="modal" id="animeModal">
+        <div class="modal-content" id="modalContent">
+            <button class="close-btn" id="closeModal">&times;</button>
+            <!-- Content will be injected -->
+        </div>
+    </div>
+    <script>
+         const animeData = [
+        {
+            title: "Naruto",
+            image: "https://upload.wikimedia.org/wikipedia/en/9/94/NarutoCoverTankobon1.jpg",
+            desc: "Follow Naruto Uzumaki's journey from a mischievous ninja to the hero of his village.",
+            link: "https://animepahe.ru/anime/78e38106-d9f3-a8b5-7974-9702f603dc96"
+        },
+        {
+            title: "One Piece",
+            image: "onepiece.jpg",
+            desc: "Monkey D. Luffy and his crew sail the Grand Line in search of the ultimate treasure.",
+            link: "https://animepahe.ru/anime/d58fc9f8-582e-fdf0-3618-112cd54ed5ab"
+        },
+        {
+            title: "Attack on Titan",
+            image: "AOT.jpg",
+            desc: "Humanity fights for survival against monstrous Titans in a post-apocalyptic world.",
+            link: "https://www.crunchyroll.com/series/GQ4G3D0GR/attack-on-titan"
+        },
+        {
+            title: "Wind Breaker",
+            image: "wb.jpg",
+            desc: "An anime adaptation of a popular Korean webtoon, also titled Wind Breaker, known for its intense action, street fighting, and bike races.",
+            link: "https://www.crunchyroll.com/series/GG5H5XQ8R/wind-breaker"
+        },
+        {
+            title: "Jujutsu Kaisen",
+            image: "jjk.jpg",
+            desc: "A popular manga and anime series following Yuji Itadori, a high school student who becomes a Jujutsu Sorcerer after consuming a powerful cursed object.",
+            link: "https://www.crunchyroll.com/series/GY5P48XEY/jujutsu-kaisen"
+        },
+        {
+            title: "Death Note",
+            image: "https://upload.wikimedia.org/wikipedia/en/6/60/Death_Note_volume_1_cover.jpg",
+            desc: "A psychological thriller where a high school student discovers a notebook that allows him to kill anyone by writing their name in it.",
+            link: "https://www.netflix.com/title/70204970"
+        },
+        {
+            title: "My Hero Academia",
+            image: "https://upload.wikimedia.org/wikipedia/en/3/3d/My_Hero_Academia_volume_1_cover.jpg",
+            desc: "In a world where most people have superpowers, Izuku Midoriya dreams of becoming a hero despite being born without powers.",
+            link: "https://www.crunchyroll.com/series/G6NQ5DWZ6/my-hero-academia"
+        },
+        {
+            title: "Fullmetal Alchemist: Brotherhood",
+            image: "https://upload.wikimedia.org/wikipedia/en/9/9b/Fullmetal_Alchemist_Brotherhood.jpg",
+            desc: "Two brothers use alchemy in their quest to find the Philosopher's Stone and restore their bodies after a failed alchemical experiment.",
+            link: "https://www.crunchyroll.com/series/GY8DWQ73Y/fullmetal-alchemist-brotherhood"
+        }
+    ];
+        function renderAnimeList() {
+            const animeList = document.getElementById('animeList');
+            animeList.innerHTML = '';
+            animeData.forEach((anime, idx) => {
+                const card = document.createElement('div');
+                card.className = 'anime-card';
+                card.onclick = () => showModal(idx);
+                card.innerHTML = `
+                    <img src="${anime.image}" alt="${anime.title}" class="anime-image">
+                    <div class="anime-info">
+                        <div class="anime-title">${anime.title}</div>
+                        <div class="anime-desc">${anime.desc}</div>
+                    </div>
+                `;
+                animeList.appendChild(card);
+            });
+        }
+         function renderAnimeList() {
+        const animeList = document.getElementById('animeList');
+        animeList.innerHTML = '';
+        animeData.forEach((anime, idx) => {
+            const card = document.createElement('div');
+            card.className = 'anime-card';
+            card.onclick = () => showModal(idx);
+            card.innerHTML = `
+                <img src="${anime.image}" alt="${anime.title}" class="anime-image">
+                <div class="anime-info">
+                    <div class="anime-title">${anime.title}</div>
+                    <div class="anime-desc">${anime.desc}</div>
+                </div>
+            `;
+            animeList.appendChild(card);
+        });
+    }
+     function showModal(idx) {
+        const anime = animeData[idx];
+        const modal = document.getElementById('animeModal');
+        const modalContent = document.getElementById('modalContent');
+        modalContent.innerHTML = `
+            <button class="close-btn" id="closeModal">&times;</button>
+            <img src="${anime.image}" alt="${anime.title}">
+            <div class="anime-title" style="font-size:1.4em; margin-bottom:8px;">${anime.title}</div>
+            <div class="anime-desc" style="margin-bottom:12px;">${anime.desc}</div>
+            <a href="${anime.link}" target="_blank" class="redirect-btn">Watch Now</a>
+        `;
+        modal.style.display = "flex";
+        document.getElementById('closeModal').onclick = () => {
+            modal.style.display = "none";}
+        };
+
+        function showModal(idx) {
+            const anime = animeData[idx];
+            const modal = document.getElementById('animeModal');
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = `
+                <button class="close-btn" id="closeModal">&times;</button>
+                <img src="${anime.image}" alt="${anime.title}">
+                <div class="anime-title" style="font-size:1.4em; margin-bottom:8px;">${anime.title}</div>
+                <div class="anime-desc" style="margin-bottom:12px;">${anime.desc}</div>
+            `;
+            modal.style.display = "flex";
+            document.getElementById('closeModal').onclick = () => {
+                modal.style.display = "none";
+          };
+        }
+        // ...existing code...
+function showModal(idx) {
+    const anime = animeData[idx];
+    const modal = document.getElementById('animeModal');
+    const modalContent = document.getElementById('modalContent');
+    modalContent.innerHTML = `
+        <button class="close-btn" id="closeModal">&times;</button>
+        <img src="${anime.image}" alt="${anime.title}">
+        <div class="anime-title" style="font-size:1.4em; margin-bottom:8px;">${anime.title}</div>
+        <div class="anime-desc" style="margin-bottom:12px;">${anime.desc}</div>
+        <a href="${anime.link}" target="_blank" class="redirect-btn">Watch Now</a>
+    `;
+    modal.style.display = "flex";
+    document.getElementById('closeModal').onclick = () => {
+        modal.style.display = "none";
+    };
+}
+// ...existing code...
+        
+    // Close modal when clicking outside content
+    document.getElementById('animeModal').onclick = function(e) {
+        if (e.target === this) this.style.display = "none";
+    };
+
+        // Close modal when clicking outside content
+        document.getElementById('animeModal').onclick = function(e) {
+            if (e.target === this) this.style.display = "none";
+        };
+
+        renderAnimeList();
+    </script>
+</body>
+</html>
